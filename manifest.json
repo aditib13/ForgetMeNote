@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+
+  "name": "ForgetMeNote",
+  "description": "This extension will take website specific notes",
+  "version": "1.0",
+  "background": {
+    "scripts": ["popup.js"]
+  },
+  
+  "browser_action": {
+   "default_icon": "stickynotes.png",
+   "default_popup": "popup.html"
+  },
+
+  "permissions": [
+    "tabs",
+    "https://www.googleapis.com/",
+    "https://accounts.google.com/",
+    "activeTab",
+    "storage"
+   ]

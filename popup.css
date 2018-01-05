@@ -1,0 +1,46 @@
+.popup {
+  line-height: 1.4;
+  width: 256px;
+}
+
+#notes {
+  white-space: pre-wrap;
+  border-radius: 3px;
+  margin-bottom: 9px;
+  padding: 1px;
+}
+
+#checkbox-div {
+  display: none;
+  margin-bottom: 8px;
+  margin-top:8px;
+}
+
+#encrypt-passphrase-div {
+  padding-top: 3px;  
+}
+
+#control-div {
+  margin-top: 8px;
+}
+
+label {
+  font-size: 90%;
+  width: 256px;
+}
+
+input {
+  font-size: 90%;
+}
+
+a {
+  font-size: 90%;
+  padding-left: 2px;
+  vertical-align: bottom;
+}
+
+#delete {
+  float: right;
+  height: 14px;
+  padding-top: 2px;
+}
