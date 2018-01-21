@@ -2,16 +2,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
   
   // chrome.storage.local.clear();
 
-  console.log('i just clicked the extension and it loaded');
-  // var input_values_string = getFormString( reference_to_the_form, bool: include_password_fields );
-
-  // setCookie('myCookieName',getFormString(document.forms.myForm,true));
-
   document.getElementById('save').addEventListener('click', saveChanges);
-  // document.getElementById('viewNotes').addEventListener('click', getNotes);
-  j
-  // function getNotes() {
-            // document.getElementById("sample").innerHTML = url;
+
   chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
     var url = tabs[0].url;
     console.log("getNotes", url);
@@ -37,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
           console.log("results from get request", n);
           console.log(n[url]);
           var list;
-          // document.getElementById("sample").innerHTML = n[url];
           if (Object.keys(n).length === 0 && n.constructor === Object) {
             list = [];
           } else {
