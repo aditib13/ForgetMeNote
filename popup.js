@@ -1,49 +1,72 @@
 document.addEventListener("DOMContentLoaded", function(event) { 
-  
-  // chrome.storage.local.clear();
+	
+	// chrome.storage.local.clear();
+	document.getElementById('save').addEventListener('click', saveChanges);
 
-  document.getElementById('save').addEventListener('click', saveChanges);
+	function printList(list) {
+		var s = '<ul>';
+		for (var i = 0; i < list.length; i++) {
+			s += '<li>' + list[i] + '</li>';
+		}; 
 
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-    var url = tabs[0].url;
-    console.log("getNotes", url);
+		s += '</ul>'
+		document.getElementById("notes").innerHTML = s;
+	};
 
-    chrome.storage.local.get([url], function(n) {
-      console.log("results from get request", n);
-      console.log(n[url]);
-      document.getElementById("sample").innerHTML = n[url];
-    });
-  });
-  // };
+	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+		var url = tabs[0].url;
+		console.log("getNotes", url);
+		chrome.storage.local.get([url], function(n) {
+			console.log("results from get request", n);
+			console.log(n[url]);
+			var list;
+			if (Object.keys(n).length === 0 && n.constructor === Object) {
+				list = [];
+			} else {
+				list = n[url];
+				console.log(n[url], list, n);
+			}
+			printList(list);
+		});
+	});
+	// };
 
-  function saveChanges() {
-    var valueInInput = document.getElementById('textbox').value;
+	function resetForm() {//clear the value in the txt field
+		document.getElementById('textbox').value = '';
+	}
 
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        var url = tabs[0].url.toString();
-        console.log("saveChanges", url);
-        // get the current list
-        // add the new input to current list
-        // create storageObject with new, updated list
-        chrome.storage.local.get([url], function(n) {
-          console.log("results from get request", n);
-          console.log(n[url]);
-          var list;
-          if (Object.keys(n).length === 0 && n.constructor === Object) {
-            list = [];
-          } else {
-            list = n[url];
-            console.log(n[url], list, n);
-          }
-        
-          list.push(valueInInput);
-          console.log("list of notes", list);
+	function saveChanges() {
+		var valueInInput = document.getElementById('textbox').value;
 
-          var storageObject = {
-            [url]: list
-          };
-          chrome.storage.local.set(storageObject);
-        });
-    });
-  }
+		chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+			var url = tabs[0].url.toString();
+			console.log("saveChanges", url);
+			// get the current list
+			// add the new input to current list
+			// create storageObject with new, updated list
+			chrome.storage.local.get([url], function(n) {
+				console.log("results from get request", n);
+				console.log(n[url]);
+				var list;
+				if (Object.keys(n).length === 0 && n.constructor === Object) {
+					list = [];
+				} else {
+					list = n[url];
+					console.log(n[url], list, n);
+				}
+				
+			list.push(valueInInput);
+			console.log("list of notes", list);
+
+			printList(list);
+
+			var storageObject = {
+				[url]: list
+			};
+	
+			chrome.storage.local.set(storageObject);
+			});
+		});
+		resetForm();
+	}
 });
