@@ -1,13 +1,22 @@
 .popup {
   line-height: 1.4;
-  width: 256px;
+  width: 300px;
 }
 
-#notes {
-  white-space: pre-wrap;
+#notes {/*
+  white-space: pre-wrap;*/
   border-radius: 3px;
   margin-bottom: 9px;
-  padding: 1px;
+  background-color: #ffffff;
+}
+
+#separatenote {
+  padding: 5px;
+  margin-bottom: 5px;
+  border: solid;
+  height: 40px;
+  width: 300px;
+  border-color: #4d4d4d;
 }
 
 #checkbox-div {
@@ -17,12 +26,15 @@
 }
 
 #encrypt-passphrase-div {
-  padding-top: 3px;  
 }
 
 #control-div {
   margin-top: 8px;
 }
+
+/*body {
+  width: 300px;
+}*/
 
 label {
   font-size: 90%;
@@ -35,12 +47,19 @@ input {
 
 a {
   font-size: 90%;
-  padding-left: 2px;
   vertical-align: bottom;
+}
+
+h1 {
+  background-color: #00cc66;
+  margin-top: 10px;
+  height: 40px;
+  margin-top: -8px;
+  margin-left: -9px;
+  margin-right: -9px;
 }
 
 #delete {
   float: right;
   height: 14px;
-  padding-top: 2px;
 }
