@@ -15,14 +15,14 @@
   margin-bottom: 5px;
   border: solid;
   height: 40px;
-  width: 300px;
+  width: 285px;
   border-color: #4d4d4d;
 }
 
 #checkbox-div {
   display: none;
   margin-bottom: 8px;
-  margin-top:8px;
+  margin-top: 8px;
 }
 
 #encrypt-passphrase-div {
@@ -32,9 +32,9 @@
   margin-top: 8px;
 }
 
-/*body {
+body {
   width: 300px;
-}*/
+}
 
 label {
   font-size: 90%;
@@ -59,7 +59,3 @@ h1 {
   margin-right: -9px;
 }
 
-#delete {
-  float: right;
-  height: 14px;
-}
