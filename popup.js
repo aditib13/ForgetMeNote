@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			var url = tabs[0].url.toString();
 			console.log("saveChanges", url);
 			// get the current list
-			// add the new input to current list
+			// deletes note from current list
 			// create storageObject with new, updated list
 			chrome.storage.local.get([url], function(n) {
 				var list = getListFromStorage(n, url);					
