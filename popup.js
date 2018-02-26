@@ -18,13 +18,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	function printList(list) {
 		var s = '<div>';
 		for (var i = 0; i < list.length; i++) {
-			s += '<div id = "separatenote">' + list[i] + '</div>';
+			s += '<div id = "separatenote">' + list[i] + '<button class="remove" id="remove" type="button">X</button>' + '</div>';
 		}; 
 
 		s += '</div>'
 		document.getElementById("notes").innerHTML = s;
 	}
 
+	var buttons = deleteNote();
+    	for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', deleteNote());
+    };
 
 	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
 		var url = tabs[0].url;
@@ -52,6 +56,32 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			chrome.storage.local.get([url], function(n) {
 				var list = getListFromStorage(n, url);					
 				list.push(valueInInput);
+				console.log("list of notes", list);
+
+				printList(list);
+
+				var storageObject = {
+					[url]: list
+				};
+		
+				chrome.storage.local.set(storageObject);
+			});
+		});
+		resetForm();
+	}
+
+	function deleteNote() {
+		var valueInInput = document.getElementById('textbox').value;
+
+		chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+			var url = tabs[0].url.toString();
+			console.log("saveChanges", url);
+			// get the current list
+			// add the new input to current list
+			// create storageObject with new, updated list
+			chrome.storage.local.get([url], function(n) {
+				var list = getListFromStorage(n, url);					
+				list.splice(valueInInput, 1);
 				console.log("list of notes", list);
 
 				printList(list);
