@@ -1,98 +1,120 @@
+
+// waits until html is loaded before running our code
 document.addEventListener("DOMContentLoaded", function(event) { 
-	
-	// chrome.storage.local.clear();
-	document.getElementById('save').addEventListener('click', saveChanges);
+    
+    // chrome.storage.local.clear();
 
-	// takes storage object and creates a list from it
-	function getListFromStorage(storageObject, url) {
-		var list;
-		if (Object.keys(storageObject).length === 0 && storageObject.constructor === Object) {
-			list = [];
-		} else {
-			list = storageObject[url];
-			console.log(storageObject[url], list, storageObject);
-		}
-		return list;
-	}
+    // calls `saveChanges` when save button is clicked
+    document.getElementById('save').addEventListener('click', saveChanges);
 
-	function printList(list) {
-		var s = '<div>';
-		for (var i = 0; i < list.length; i++) {
-			s += '<div id = "separatenote">' + list[i] + '<button class="remove" id="remove" type="button">X</button>' + '</div>';
-		}; 
+    // inputs: storage object (note typed by user)
+    // outputs: creates, then returns a list from storage objects
+    // `storageObject` format -> 0: element1, 1: element2, length: 2    
+    // `storageObject` format -> url: (# of elements in list) [elements, in, list]
+    function getListFromStorage(storageObject, url) {
+        var urlStorageList;
+        if (Object.keys(storageObject).length === 0 && storageObject.constructor === Object) {
+            urlStorageList = [];
+        }
+        else {
+            urlStorageList = storageObject[url];
+            console.log(storageObject[url], urlStorageList, storageObject);
+        }
+        return urlStorageList;
+    }
 
-		s += '</div>'
-		document.getElementById("notes").innerHTML = s;
-	}
+    // inputs: list of notes
+    // returns: nothing
+    // function: prints the notes entered into textbox each in separate div containers
+    function printList(list) {
+        var divContainer = '<div>';
+        for (var i = 0; i < list.length; i++) {
+            divContainer += '<div id = "separatenote">' + list[i] + '<button class="remove" id="remove" type="button">X</button>' + '</div>';
+        }; 
 
-	var buttons = deleteNote();
-    	for (var i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener('click', deleteNote());
-    };
+        divContainer += '</div>'
+        document.getElementById("notes").innerHTML = divContainer;
+    }
 
-	chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-		var url = tabs[0].url;
-		console.log("getNotes", url);
-		chrome.storage.local.get([url], function(n) {
-			var list = getListFromStorage(n, url);
-			printList(list);
-		});
-	});
-	// };
+    // requires: open tab is the current active one
+    // returns: nothing
+    // function: calls `getListFromStorage` to get the note from storage
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        var url = tabs[0].url;
+        console.log("getNotes", url);
+        // inputs: url of current tab, function callback
+        // returns: nothing
+        // gets list of notes entered by user, then calls `printList` in order to display the elements of the list
+        chrome.storage.local.get([url], function(callback) {
+            var urlStorageList = getListFromStorage(callback, url);
+            printList(urlStorageList);
+        });
+    });
+    // };
 
-	function resetForm() {//clear the value in the txt field
-		document.getElementById('textbox').value = '';
-	}
+    // clears the value in the text field
+    function resetForm() {
+        document.getElementById('textbox').value = '';
+    }
 
-	function saveChanges() {
-		var valueInInput = document.getElementById('textbox').value;
+    // returns: nothing
+    // saves the note entered into storage
+    function saveChanges() {
+        var valueInInput = document.getElementById('textbox').value;
 
-		chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-			var url = tabs[0].url.toString();
-			console.log("saveChanges", url);
-			// get the current list
-			// add the new input to current list
-			// create storageObject with new, updated list
-			chrome.storage.local.get([url], function(n) {
-				var list = getListFromStorage(n, url);					
-				list.push(valueInInput);
-				console.log("list of notes", list);
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            var url = tabs[0].url.toString();
+            console.log("saveChanges", url);
+            // get the current list
+            // add the new input to current list
+            // create storageObject with new, updated list
+            chrome.storage.local.get([url], function(callback) {
+                var list = getListFromStorage(callback, url);                  
+                list.push(valueInInput);
+                console.log("list of notes", list);
 
-				printList(list);
+                printList(list);
 
-				var storageObject = {
-					[url]: list
-				};
-		
-				chrome.storage.local.set(storageObject);
-			});
-		});
-		resetForm();
-	}
+                var storageObject = {
+                    [url]: list
+                };
+        
+                chrome.storage.local.set(storageObject);
+            });
+        });
+        resetForm();
+    }
 
-	function deleteNote() {
-		var valueInInput = document.getElementById('textbox').value;
+    // // deletes note when x button is pressed
+    // var deleteButton = urlStorageList;
+    // for (var i = 0; i < urlStorageList.length; i++) {
+    //     urlStorageList[i].addEventListener('click', deleteNote());
+    // };
 
-		chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-			var url = tabs[0].url.toString();
-			console.log("saveChanges", url);
-			// get the current list
-			// deletes note from current list
-			// create storageObject with new, updated list
-			chrome.storage.local.get([url], function(n) {
-				var list = getListFromStorage(n, url);					
-				list.splice(valueInInput, 1);
-				console.log("list of notes", list);
+    // deletes a note when the x button on that note is clicked
+    function deleteNote() {
+        var valueInInput = document.getElementById('textbox').value;
 
-				printList(list);
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            var url = tabs[0].url.toString();
+            console.log("saveChanges", url);
+            // get the current list
+            // deletes note from current list
+            // create storageObject with new, updated list
+            chrome.storage.local.get([url], function(callback) {
+                var list = getListFromStorage(callback, url);                  
+                list.splice(valueInInput, 1);
+                console.log("list of notes", list);
 
-				var storageObject = {
-					[url]: list
-				};
-		
-				chrome.storage.local.set(storageObject);
-			});
-		});
-		resetForm();
-	}
+                printList(list);
+
+                var storageObject = {
+                    [url]: list
+                };
+        
+                chrome.storage.local.set(storageObject);
+            });
+        });
+        resetForm();
+    }
 });
