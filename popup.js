@@ -4,12 +4,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
     
     // chrome.storage.local.clear();
 
-    // calls `saveChanges` when save button is clicked
-    document.getElementById('save').addEventListener('click', saveChanges);
+    // sets up eventListener for the event that save button is clicked
+    document.getElementById('save').addEventListener('click', addNewNote);
 
-    // inputs: storage object (note typed by user)
-    // outputs: creates, then returns a list from storage objects
-    // `storageObject` format -> 0: element1, 1: element2, length: 2    
+    // Gets list of notes for specified `url` from storage in list form, empty list if no notes for that `url`
+    // Input:
+        // `storageObject` (object where keys are url [strings] and values are [lists] of [strings] of user inputs)
+        // `url` of current tab [string]
+    // Returns: list from storage objects  
     // `storageObject` format -> url: (# of elements in list) [elements, in, list]
     function getListFromStorage(storageObject, url) {
         var urlStorageList;
@@ -18,36 +20,68 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
         else {
             urlStorageList = storageObject[url];
-            console.log(storageObject[url], urlStorageList, storageObject);
         }
+        console.log("getListFromStorage -> ", "\n\turl: ", url, "\n\turlStorageList: ", JSON.stringify(urlStorageList), "\n\tstorageObject: ", JSON.stringify(storageObject));
+
         return urlStorageList;
     }
 
-    // inputs: list of notes
-    // returns: nothing
-    // function: prints the notes entered into textbox each in separate div containers
-    function printList(list) {
-        var divContainer = '<div>';
-        for (var i = 0; i < list.length; i++) {
-            divContainer += '<div id = "separatenote">' + list[i] + '<button class="remove" id="remove" type="button">X</button>' + '</div>';
-        }; 
-
-        divContainer += '</div>'
-        document.getElementById("notes").innerHTML = divContainer;
+    // helper function for closures
+    function makeDeleteCallback(i) {
+        return function() {
+            deleteNote(i);
+        };
     }
 
+    // Prints the notes entered into text box each in separate div containers
+    // Input:
+        // [list] of [strings] of user inputs
+    // Returns: nothing
+    function displayListAsHTML(notesList) {
+        var divContainer = '<div id="note-container">';
+        for (var i = 0; i < notesList.length; i++) {
+            divContainer += '<div id="separatenote">' + notesList[i] + '<button class="remove" id="remove">X</button>' + '</div>';
+        }; 
+        divContainer += '</div>'
+        document.getElementById("notes").innerHTML = divContainer;
+
+        // adding functionality to delete button
+        var allNoteElements = document.getElementById("note-container");
+        for (var i = 0; i < allNoteElements.childNodes.length; i++) {
+            // gets button element from inside `divContainer`
+            var buttonElement = allNoteElements.childNodes[i].childNodes[1];
+
+            // addEventListener's second argument must be a function, 
+            // so we use an anonymous function. just an anonymous function
+            // returns only the last iteration, so we create a function factory
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
+                // Creating closures in loops: A common mistake
+            // just doing deleteNote(i) wouldn't work since it's a 
+            // function call
+            buttonElement.addEventListener('click', makeDeleteCallback(i));
+            console.log("testing childnode for loop: ", allNoteElements.childNodes[i].childNodes[1]);
+        };
+        console.log("displayListAsHTML -> ", "\n\tnotesList: ", JSON.stringify(notesList));
+    }
+
+
+
+    // Gets the url of the current tab
+    // Inputs:
+        // `tabs` : current tab
     // requires: open tab is the current active one
-    // returns: nothing
-    // function: calls `getListFromStorage` to get the note from storage
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+    // Returns: nothing
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
         var url = tabs[0].url;
         console.log("getNotes", url);
-        // inputs: url of current tab, function callback
-        // returns: nothing
-        // gets list of notes entered by user, then calls `printList` in order to display the elements of the list
+        // Input:
+            // url of current tab, function callback
+        // Returns: nothing
+        // gets list of notes entered by user, then calls `displayListAsHTML` in order to display the elements of the list
         chrome.storage.local.get([url], function(callback) {
             var urlStorageList = getListFromStorage(callback, url);
-            printList(urlStorageList);
+            displayListAsHTML(urlStorageList);
+            console.log("url info -> ", "\n\turl: ", url, "\n\turlStorageList: ", urlStorageList);
         });
     });
     // };
@@ -57,14 +91,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
         document.getElementById('textbox').value = '';
     }
 
-    // returns: nothing
-    // saves the note entered into storage
-    function saveChanges() {
+    // Saves the note entered into storage
+    // Returns: nothing
+    function addNewNote() {
         var valueInInput = document.getElementById('textbox').value;
 
+        // same function from before, gets `url` of current tab
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             var url = tabs[0].url.toString();
-            console.log("saveChanges", url);
+            console.log("addNewNote", url);
             // get the current list
             // add the new input to current list
             // create storageObject with new, updated list
@@ -73,8 +108,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 list.push(valueInInput);
                 console.log("list of notes", list);
 
-                printList(list);
+                displayListAsHTML(list);
 
+                // TODO: write why we used [] for url
                 var storageObject = {
                     [url]: list
                 };
@@ -85,29 +121,24 @@ document.addEventListener("DOMContentLoaded", function(event) {
         resetForm();
     }
 
-    // // deletes note when x button is pressed
-    // var deleteButton = urlStorageList;
-    // for (var i = 0; i < urlStorageList.length; i++) {
-    //     urlStorageList[i].addEventListener('click', deleteNote());
-    // };
+    // Deletes a note when the x button on that note is clicked
+    // Returns: nothing
+    function deleteNote(i) {
+        console.log("deleteNote", i);
 
-    // returns: nothing
-    // deletes a note when the x button on that note is clicked
-    function deleteNote() {
-        var valueInInput = document.getElementById('textbox').value;
-
+        // same function from before, gets `url` of current tab
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             var url = tabs[0].url.toString();
-            console.log("saveChanges", url);
+            console.log("addNewNote", url);
             // get the current list
             // deletes note from current list
             // create storageObject with new, updated list
             chrome.storage.local.get([url], function(callback) {
                 var list = getListFromStorage(callback, url);                  
-                list.splice(valueInInput, 1);
-                console.log("list of notes", list);
+                list.splice(i, 1);
+                console.log("deleteNote -> ", "\n\tlist of notes: ", list);
 
-                printList(list);
+                displayListAsHTML(list);
 
                 var storageObject = {
                     [url]: list

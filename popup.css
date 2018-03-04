@@ -7,20 +7,19 @@
   white-space: pre-wrap;*/
   border-radius: 3px;
   margin-bottom: 9px;
-  background-color: #ffffff;
 }
 
 #separatenote {
   padding: 5px;
   margin-bottom: 5px;
-  border: solid;
   height: 40px;
   width: 285px;
-  border-color: #4d4d4d;
+  background-color: #ffffff;
 }
 
-button {
-  margin-right: 0px;
+.remove {
+  float: right;
+  border: none;
 }
 
 #checkbox-div {
