@@ -6,6 +6,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     // sets up eventListener for the event that save button is clicked
     document.getElementById('save').addEventListener('click', addNewNote);
+    // allows enter to save note
+    document.getElementById('textbox').addEventListener('keypress', function(event) {
+        if (event.keyCode == 13) {
+            addNewNote();
+        }
+    });
 
     // Gets list of notes for specified `url` from storage in list form, empty list if no notes for that `url`
     // Input:
@@ -63,28 +69,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         };
         console.log("displayListAsHTML -> ", "\n\tnotesList: ", JSON.stringify(notesList));
     }
-
-
-
-    // Gets the url of the current tab
-    // Inputs:
-        // `tabs` : current tab
-    // requires: open tab is the current active one
-    // Returns: nothing
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
-        var url = tabs[0].url;
-        console.log("getNotes", url);
-        // Input:
-            // url of current tab, function callback
-        // Returns: nothing
-        // gets list of notes entered by user, then calls `displayListAsHTML` in order to display the elements of the list
-        chrome.storage.local.get([url], function(callback) {
-            var urlStorageList = getListFromStorage(callback, url);
-            displayListAsHTML(urlStorageList);
-            console.log("url info -> ", "\n\turl: ", url, "\n\turlStorageList: ", urlStorageList);
-        });
-    });
-    // };
 
     // clears the value in the text field
     function resetForm() {
@@ -149,4 +133,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
         resetForm();
     }
+
+    // TODO: make sure this is the right wayto call/assign main
+    // Gets the url of the current tab
+    // Inputs:
+        // `tabs` : current tab
+    // requires: open tab is the current active one
+    // Returns: nothing
+    function main() {
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
+            var url = tabs[0].url;
+            console.log("getNotes", url);
+            // Input:
+                // url of current tab, function callback
+            // Returns: nothing
+            // gets list of notes entered by user, then calls `displayListAsHTML` in order to display the elements of the list
+            chrome.storage.local.get([url], function(callback) {
+                var urlStorageList = getListFromStorage(callback, url);
+                displayListAsHTML(urlStorageList);
+                console.log("url info -> ", "\n\turl: ", url, "\n\turlStorageList: ", urlStorageList);
+            });
+        });
+    }
+    main();
 });
+
+
