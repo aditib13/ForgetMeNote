@@ -1,4 +1,3 @@
-
 // waits until html is loaded before running our code
 document.addEventListener("DOMContentLoaded", function(event) { 
     
@@ -46,7 +45,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function displayListAsHTML(notesList) {
         var divContainer = '<div id="note-container">';
         for (var i = 0; i < notesList.length; i++) {
+            if (notesList[i] != '') {
             divContainer += '<div id="separatenote">' + notesList[i] + '<button class="remove" id="remove"></button>' + '</div>';
+            }
         }; 
         divContainer += '</div>'
         document.getElementById("notes").innerHTML = divContainer;
@@ -83,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         // same function from before, gets `url` of current tab
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             var url = tabs[0].url.toString();
-            console.log("addNewNote", url);
+            console.log("deleteNote", url);
             // get the current list
             // add the new input to current list
             // create storageObject with new, updated list
@@ -157,5 +158,3 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
     main();
 });
-
-

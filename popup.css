@@ -3,10 +3,19 @@
   width: 300px;
 }
 
-#notes {/*
-  white-space: pre-wrap;*/
+.remove {
+  float: right;
+  border: none;
+  background: url(./trash.png) no-repeat;
+  height: 30px;
+  width: 30px;
+  margin-top: 6px;
+}
+
+#notes {
   border-radius: 3px;
   margin-bottom: 9px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 #separatenote {
@@ -15,24 +24,30 @@
   height: 40px;
   width: 285px;
   background-color: #ffffff;
+  border-radius: 10px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 #save {
-  background: url(./add.png) no-repeat;
-  border: none;
-  height: 20px;
-  width: 20px;
-  margin-top: 2px;
-  margin-left: 10px;
-}
-
-.remove {
+  background-color: #a6a6a6;
   float: right;
   border: none;
-  background: url(./trash.png) no-repeat;
-  height: 30px;
-  width: 30px;
-  margin-top: 6px;
+  color: white;
+  padding: 7px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#save:hover {background-color: #39ac39}
+
+#textbox {
+  width: 200px;
+  margin-top: 10px;
 }
 
 #checkbox-div {
@@ -67,13 +82,11 @@ a {
 }
 
 h1 {
-  background-color: #00cc66;
+  background-color: #39ac39;
+  font-family: 'Open Sans', sans-serif;
   height: 40px;
   margin-top: -8px;
   margin-left: -9px;
   margin-right: -9px;
   color: #ffffff;
 }
-
-
-
