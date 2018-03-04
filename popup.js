@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     //     urlStorageList[i].addEventListener('click', deleteNote());
     // };
 
+    // returns: nothing
     // deletes a note when the x button on that note is clicked
     function deleteNote() {
         var valueInInput = document.getElementById('textbox').value;
