@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function displayListAsHTML(notesList) {
         var divContainer = '<div id="note-container">';
         for (var i = 0; i < notesList.length; i++) {
-            divContainer += '<div id="separatenote">' + notesList[i] + '<button class="remove" id="remove">X</button>' + '</div>';
+            divContainer += '<div id="separatenote">' + notesList[i] + '<button class="remove" id="remove"></button>' + '</div>';
         }; 
         divContainer += '</div>'
         document.getElementById("notes").innerHTML = divContainer;
