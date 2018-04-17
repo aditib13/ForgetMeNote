@@ -12,5 +12,3 @@ and select all the files to unload.
 * JavaScript
 * HTML5
 * CSS3
-
-## Screenshots
